@@ -10,12 +10,11 @@ if [ ! -f "$dir/partitions/boot.img" ]; then
 exit 1; fi
 
 if [ ! -f "$dir/partitions/dtbo.img" ]; then
-    echo "dtbo.img does not exist!"
-exit 1; fi
+    echo "WARNING: dtbo.img does not exist"
+fi
 
 if [ ! -f "$dir/partitions/recovery.img" ]; then
-    echo "recovery.img does not exist!"
-#exit 1
+    echo "WARNING: recovery.img does not exist"
 fi
 
 tar -cJf "$output/device_"$device".tar.xz" -C $dir partitions/ system/
