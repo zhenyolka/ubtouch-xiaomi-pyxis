@@ -22,8 +22,5 @@ flashable:
     - ./build/system-image-from-ota.sh ota/ubuntu_command out
   artifacts:
     paths:
-      - out/boot.img
-      - out/dtbo.img
-      - out/recovery.img
-      - out/system.img
+      - out
   when: manual
