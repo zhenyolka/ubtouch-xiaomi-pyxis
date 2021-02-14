@@ -22,7 +22,9 @@ flashable:
     - ./build/system-image-from-ota.sh ota/ubuntu_command out
   artifacts:
     paths:
-      - out
+      - out/boot.img
+      - out/recovery.img
+      - out/system.img
   when: manual
 
 devel-flashable:
@@ -36,4 +38,6 @@ devel-flashable:
     - ./build/system-image-from-ota.sh ota/ubuntu_command out
   artifacts:
     paths:
-      - out
+      - out/boot.img
+      - out/recovery.img
+      - out/system.img
