@@ -3,6 +3,13 @@
 This is based on Halium 9.0, and uses the mechanism described in [this
 page](https://github.com/ubports/porting-notes/wiki/GitLab-CI-builds-for-devices-based-on-halium_arm64-(Halium-9)).
 
+This project can be built manually (see the instructions below) or you can
+download the ready-made artifacts from gitlab: take the [latest
+archive](https://gitlab.com/ubports/community-ports/android9/xiaomi-redmi-note-7-pro/xiaomi-violet/-/jobs/artifacts/master/download?job=devel-flashable),
+unpack the `artifacts.zip` file (make sure that all files are created inside a
+directory called `out/`, then follow the instructions in the
+[Install](#install) section.
+
 
 ## How to build
 
