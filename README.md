@@ -23,3 +23,12 @@ After the build process has successfully completed, run
 fastboot flash boot out/boot.img
 fastboot flash system out/system.img
 ```
+
+## Splash screen
+
+If you'd like to change the splash screen, run
+
+```
+./splash/generate.sh out
+fastboot flash splash out/splash.img
+```
