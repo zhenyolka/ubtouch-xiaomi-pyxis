@@ -22,6 +22,8 @@ if [ -d "$HERE/ramdisk-overlay" ]; then
     find . | cpio -o -H newc | gzip >> "$RAMDISK"
 fi
 
+RAMDISK_RECOVERY="$HERE/recovery/ramdisk-recovery.img"
+
 if [ -d "$HERE/recovery/overlay" ] && [ -e "$HERE/recovery/ramdisk-recovery.img" ]; then
     mkdir -p "$HERE/ramdisk-recovery"
     cd "$HERE/ramdisk-recovery"
@@ -30,8 +32,9 @@ if [ -d "$HERE/recovery/overlay" ] && [ -e "$HERE/recovery/ramdisk-recovery.img"
     cp -r "$HERE/recovery/overlay"/* "$HERE/ramdisk-recovery"
 
     find . | cpio -o -H newc | gzip > "$HERE/recovery/ramdisk-recovery-overlayed.img"
+    RAMDISK_RECOVERY="$HERE/recovery/ramdisk-recovery-overlayed.img"
 fi
 
 mkbootimg --kernel "$KERNEL_OBJ/arch/$ARCH/boot/Image.gz-dtb" --ramdisk "$RAMDISK" --base $deviceinfo_flash_offset_base --kernel_offset $deviceinfo_flash_offset_kernel --ramdisk_offset $deviceinfo_flash_offset_ramdisk --second_offset $deviceinfo_flash_offset_second --tags_offset $deviceinfo_flash_offset_tags --pagesize $deviceinfo_flash_pagesize --os_version $deviceinfo_os_version --os_patch_level $deviceinfo_os_patch_level --cmdline "$deviceinfo_kernel_cmdline" -o "$OUT"
 
-mkbootimg --kernel "$KERNEL_OBJ/arch/$ARCH/boot/Image.gz-dtb" --ramdisk "$HERE/recovery/ramdisk-recovery-overlayed.img" --base $deviceinfo_flash_offset_base --kernel_offset $deviceinfo_flash_offset_kernel --ramdisk_offset $deviceinfo_flash_offset_ramdisk --second_offset $deviceinfo_flash_offset_second --tags_offset $deviceinfo_flash_offset_tags --pagesize $deviceinfo_flash_pagesize --os_version $deviceinfo_os_version --os_patch_level $deviceinfo_os_patch_level --cmdline "$deviceinfo_kernel_cmdline" -o "$(dirname $OUT)/recovery.img"
+mkbootimg --kernel "$KERNEL_OBJ/arch/$ARCH/boot/Image.gz-dtb" --ramdisk "$RAMDISK_RECOVERY" --base $deviceinfo_flash_offset_base --kernel_offset $deviceinfo_flash_offset_kernel --ramdisk_offset $deviceinfo_flash_offset_ramdisk --second_offset $deviceinfo_flash_offset_second --tags_offset $deviceinfo_flash_offset_tags --pagesize $deviceinfo_flash_pagesize --os_version $deviceinfo_os_version --os_patch_level $deviceinfo_os_patch_level --cmdline "$deviceinfo_kernel_cmdline" -o "$(dirname $OUT)/recovery.img"
