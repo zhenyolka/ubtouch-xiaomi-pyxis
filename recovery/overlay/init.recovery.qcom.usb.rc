@@ -33,26 +33,12 @@ on property:sys.usb.config=none && property:sys.usb.configfs=0
 # This is the fallback configuration if the
 # USB manager fails to set a standard configuration
 on property:sys.usb.config=adb && property:sys.usb.configfs=0
-    write /sys/class/android_usb/android0/enable 0
-    write /sys/class/android_usb/android0/idVendor 18D1
-    write /sys/class/android_usb/android0/idProduct D001
-    write /sys/class/android_usb/android0/functions ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 1
+    write /dev/kmsg "mardy config=adb && configfs=0            init.recovery.qcom.usb.rc"
     start adbd
     setprop sys.usb.state ${sys.usb.config}
 
 # Used to set USB configuration at boot and to switch the configuration
 # when changing the default configuration
 on boot && property:persist.sys.usb.config=*
+    write /dev/kmsg "mardy property persist                    init.recovery.qcom.usb.rc"
     setprop sys.usb.config ${persist.sys.usb.config}
-
-on property:sys.usb.config=mtp,adb && property:sys.usb.configfs=0
-    write /sys/class/android_usb/android0/enable 0
-    write /sys/class/android_usb/android0/iSerial ${ro.serialno}
-    write /sys/class/android_usb/android0/idVendor 2A70
-    write /sys/class/android_usb/android0/idProduct 9011
-
-    write /sys/class/android_usb/android0/functions mtp,adb
-    write /sys/class/android_usb/android0/enable 1
-    start adbd
-    setprop sys.usb.state ${sys.usb.config}
