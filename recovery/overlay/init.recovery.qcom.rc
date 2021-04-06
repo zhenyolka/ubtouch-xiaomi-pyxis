@@ -1,4 +1,4 @@
-import /init.recovery.twrp.rc
+#import /init.recovery.twrp.rc
 
 import /init.recovery.qcom.usb.rc
 
