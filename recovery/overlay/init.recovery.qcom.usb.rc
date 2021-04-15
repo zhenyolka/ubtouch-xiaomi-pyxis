@@ -21,6 +21,7 @@ on boot
     mount functionfs adb /dev/usb-ffs/adb uid=2000,gid=2000
 
     setprop sys.usb.controller ${ro.boot.usbcontroller}
+    setprop ro.secure 0
 
 # Used to disable USB when switching states
 on property:sys.usb.config=none && property:sys.usb.configfs=0
