@@ -40,7 +40,7 @@ TOTAL=$(cat $COMMAND_FILE | wc -l)
 
 progress() {
     # Devide by 0 will make go boom!
-    if [ "$1" = "0" ]; then
+    if [ $1 -eq 0 ]; then
         # echo "0" > cmd_pipe
         @
     fi
@@ -269,6 +269,11 @@ do
             # Unpack everything else on top of the system partition
             sudo sh -c "xzcat \"$SRC/$2\" | tar --numeric-owner -xf -"
             rm -f removed
+
+            # Rename system.img to android-rootfs.img until UBPorts CI builds are fixed
+            if [ -e "system/var/lib/lxc/android/system.img" ]; then
+                sudo mv system/var/lib/lxc/android/system.img system/var/lib/lxc/android/android-rootfs.img
+            fi
 
             # Move things to data
             cp partitions/* "$OUT" || true

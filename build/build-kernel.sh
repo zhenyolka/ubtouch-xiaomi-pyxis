@@ -7,7 +7,7 @@ HERE=$(pwd)
 source "${HERE}/deviceinfo"
 
 KERNEL_DIR="${TMPDOWN}/$(basename "${deviceinfo_kernel_source}")"
-KERNEL_DIR="${KERNEL_DIR%.*}"
+KERNEL_DIR="${KERNEL_DIR%.git}"
 OUT="${TMPDOWN}/KERNEL_OBJ"
 
 mkdir -p "$OUT"
@@ -20,8 +20,10 @@ case "$deviceinfo_arch" in
 esac
 
 export ARCH
-export CROSS_COMPILE=$TMPDOWN/aarch64-linux-android-4.9/bin/aarch64-linux-android-
-export CROSS_COMPILE_ARM32=$TMPDOWN/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-
+export CROSS_COMPILE="${deviceinfo_arch}-linux-android-"
+if [ "$ARCH" == "arm64" ]; then
+    export CROSS_COMPILE_ARM32=arm-linux-androideabi-
+fi
 MAKEOPTS=""
 if [ -n "$CC" ]; then
     MAKEOPTS="CC=$CC"

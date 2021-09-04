@@ -45,19 +45,20 @@ esac
 cd "$TMPDOWN"
     [ -d aarch64-linux-android-4.9 ] || git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b pie-gsi --depth 1
     GCC_PATH="$TMPDOWN/aarch64-linux-android-4.9"
-    if [ -n "$deviceinfo_kernel_clang_compile" ] && $deviceinfo_kernel_clang_compile; then
-        [ -d linux-x86 ] || git clone https://github.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-6875598 -b 10.0 --depth=1 linux-x86
-        CLANG_PATH="$TMPDOWN/linux-x86"
+    if $deviceinfo_kernel_clang_compile; then
+        [ -d linux-x86 ] || git clone https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 -b android10-gsi --depth 1
+        CLANG_PATH="$TMPDOWN/linux-x86/clang-r353983c"
     fi
-    [ -d arm-linux-androideabi-4.9 ] || git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9 -b pie-gsi --depth 1
-    GCC_ARM32_PATH="$TMPDOWN/arm-linux-androideabi-4.9"
-
+    if [ "$deviceinfo_arch" == "aarch64" ]; then
+        [ -d arm-linux-androideabi-4.9 ] || git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9 -b pie-gsi --depth 1
+        GCC_ARM32_PATH="$TMPDOWN/arm-linux-androideabi-4.9"
+    fi
     KERNEL_DIR="$(basename "${deviceinfo_kernel_source}")"
     KERNEL_DIR="${KERNEL_DIR%.*}"
     [ -d "$KERNEL_DIR" ] || git clone "$deviceinfo_kernel_source" -b $deviceinfo_kernel_source_branch --depth 1
 
     [ -f halium-boot-ramdisk.img ] || curl --location --output halium-boot-ramdisk.img \
-        "https://github.com/halium/initramfs-tools-halium/releases/download/continuous/initrd.img-touch-${RAMDISK_ARCH}"
+        "https://github.com/NotKit/initramfs-tools-halium/releases/download/dynparts/initrd.img-touch-${RAMDISK_ARCH}"
     
     if [ -n "$deviceinfo_kernel_apply_overlay" ] && $deviceinfo_kernel_apply_overlay; then
         [ -d libufdt ] || git clone https://android.googlesource.com/platform/system/libufdt -b pie-gsi --depth 1
@@ -70,13 +71,13 @@ if [ -n "$deviceinfo_kernel_apply_overlay" ] && $deviceinfo_kernel_apply_overlay
     "$SCRIPT/build-ufdt-apply-overlay.sh" "${TMPDOWN}"
 fi
 
-if [ -n "$deviceinfo_kernel_clang_compile" ] && $deviceinfo_kernel_clang_compile; then
+if $deviceinfo_kernel_clang_compile; then
     CC=clang \
     CLANG_TRIPLE=${deviceinfo_arch}-linux-gnu- \
     PATH="$CLANG_PATH/bin:$GCC_PATH/bin:$GCC_ARM32_PATH/bin:${PATH}" \
     "$SCRIPT/build-kernel.sh" "${TMPDOWN}" "${TMP}/system"
 else
-    PATH="$GCC_PATH/bin:$GCC_ARM32_PATH/bin:${PATH}" \
+    PATH="$GCC_PATH/bin:${PATH}" \
     "$SCRIPT/build-kernel.sh" "${TMPDOWN}" "${TMP}/system"
 fi
 
@@ -91,3 +92,4 @@ if [ -z "$BUILD_DIR" ]; then
 fi
 
 echo "done"
+
